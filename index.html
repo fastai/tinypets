@@ -1,29 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><title>Pet classifier</title></head>
-<body>
-  <h1>Pet classifier</h1>
-  <input type="file" multiple="">
+  <head>
+    <title>Pet classifier</title>
+  </head>
+  <body>
+    <h1>Pet classifier</h1>
+    <input id="files-input" type="file" multiple="">
 
-  <script>
-    async function loaded(reader) {
-      data = JSON.stringify({"data":[ reader.result ]})
-      post = { method: "POST", body: data, headers: { "Content-Type": "application/json" } }
-      const response = await fetch('https://hf.space/embed/jph00/pets/+/api/predict/', post)
-      const json = await response.json();
-      prediction = json['data'][0]['confidences'][0];
-      var div = document.createElement('div');
-      div.innerHTML = `<img src="${reader.result}" width="300"> <p>${prediction['label']}</p>`
-      document.body.append(div);
-    }
-    
-    const photos = document.querySelector('input[type="file"][multiple]');
-    photos.addEventListener('input', async () => {
-      for (const file of photos.files) {
-        const reader = new FileReader();
-        reader.addEventListener('load', ()=>loaded(reader))
-        reader.readAsDataURL(file);
+    <script>
+      document.getElementById('files-input')
+        .addEventListener('input', function(e) {
+          for (let file of e.target.files) {
+            const reader = new FileReader();
+            reader.onload = (e) => processImage(e.target.result);
+            reader.readAsDataURL(file);
+          }
+        });
+
+      async function processImage(imageData) {
+        let prediction = await getPredictionForImage(imageData);
+
+        showImageWithPrediction(imageData, prediction);
       }
-    });
-  </script>
-</body></html>
+
+      async function getPredictionForImage(imageData) {
+        let response = await fetch(
+          'https://hf.space/embed/jph00/pets/+/api/predict/',
+          {
+            method: 'POST',
+            body: JSON.stringify({ data: [imageData] }),
+            headers: { 'Content-Type': 'application/json' }
+          }
+        );
+
+        let responseData = await response.json();
+
+        return responseData['data'][0]['confidences'][0];
+      }
+
+      function showImageWithPrediction(imageData, prediction) {
+        let container = document.createElement('div');
+
+        let img = document.createElement('img');
+        img.setAttribute('src', imageData);
+        img.setAttribute('width', '300');
+
+        let predictionParagraph = document.createElement('p');
+        predictionParagraph.innerText = prediction.label;
+
+        document.body.append(container);
+        container.appendChild(img);
+        container.appendChild(predictionParagraph);
+      }
+    </script>
+  </body>
+</html>
