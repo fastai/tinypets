@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"">
-<head><title>Pet classifier</title></head>
-<body>
-  <h1>Pet classifier</h1>
-  <input type="file" multiple="">
+<head><title>Pet classifier</title></head> <body>
+  <h1>Pet classifier</h1> <input type="file" multiple="">
 
   <script>
     async function loaded(reader) {
@@ -16,7 +14,6 @@
       div.innerHTML = `<br/><img src="${reader.result}" width="300"> <p>${prediction['label']}</p>`
       document.body.append(div);
     }
-    
     const photos = document.querySelector('input[type="file"][multiple]');
     photos.addEventListener('input', async () => {
       for (const file of photos.files) {
@@ -25,5 +22,4 @@
         reader.readAsDataURL(file);
       }
     });
-  </script>
-</body></html>
+</script></body></html>
