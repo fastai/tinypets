@@ -1,5 +1,5 @@
 ---
-title: Tiny Pet Classifier
+title: Just a test
 ---
 
 testing
