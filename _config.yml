@@ -1,4 +1,4 @@
-remote_theme: daviddarnes/alembic@main
+remote_theme: minima
 plugins:
 - jekyll-remote-theme
 
